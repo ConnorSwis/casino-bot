@@ -3,10 +3,12 @@ from discord.ext import commands
 import os
 
 
-PREFIX = '$'
 TOKEN = 'XXX'
+owner_ids = [123456789012345678]
+
+PREFIX = '$'
 intents = discord.Intents.all()
-client = commands.Bot(command_prefix=PREFIX, owner_id=640393413425889314, intents=intents)
+client = commands.Bot(command_prefix=PREFIX, owner_ids=owner_ids, intents=intents)
 
 client.remove_command('help')
 
