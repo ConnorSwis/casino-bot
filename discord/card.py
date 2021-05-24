@@ -3,7 +3,7 @@ from typing import Literal
 
 class Card:
     suits = ["clubs", "diamonds", "hearts", "spades"]
-    def __init__(self, suit: Literal[suits], value: int, down=False):
+    def __init__(self, suit: str, value: int, down=False):
         self.suit = suit
         self.value = value
         self.down = down

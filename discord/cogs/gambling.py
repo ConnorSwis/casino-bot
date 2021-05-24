@@ -4,10 +4,10 @@ import random
 from typing import List, Optional, Tuple, Union
 
 import discord
-import helpers
-from card import Card
+import helpers   # type:ignore
+from card import Card   # type:ignore
 from discord.ext import commands
-from economy import Economy
+from economy import Economy   # type:ignore
 from PIL import Image
 
 DEFAULT_BET = 100
@@ -175,9 +175,9 @@ class Gambling(commands.Cog):
             def check(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> bool:
                 return all((
                     str(reaction.emoji) in ("🇸", "🇭"),  # correct emoji
-                    user == ctx.author,  # correct user
-                    user != self.client.user,  # isn't the bot
-                    reaction.message == msg  # correct message
+                    user == ctx.author,                  # correct user
+                    user != self.client.user,           # isn't the bot
+                    reaction.message == msg            # correct message
                 ))
 
             standing = False

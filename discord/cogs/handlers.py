@@ -1,10 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands.errors import *
-import json
 
-
-DEFAULT_PREFIX='$'
 
 class Handlers(commands.Cog, name='handlers'):
     def __init__(self, client: commands.Bot):
