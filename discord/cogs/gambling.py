@@ -103,7 +103,6 @@ class Gambling(commands.Cog):
 
     @staticmethod
     def hand_to_images(hand: List[Card]) -> List[Image.Image]:
-        (print(os.path.join(ABS_PATH, card.image)) for card in hand)  # type:ignore
         return [Image.open(os.path.join(ABS_PATH, card.image)) for card in hand]  # type:ignore
 
     @staticmethod
