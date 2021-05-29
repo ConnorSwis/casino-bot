@@ -1,13 +1,17 @@
+import os
+import pathlib
 import random
 from datetime import datetime
-import pathlib
-import os
-import discord
+
 import yaml
+
+import discord
 
 
 ABS_PATH = pathlib.Path(__file__).parent.absolute()
 COG_FOLDER = os.path.join(ABS_PATH, 'cogs/')
+
+print(ABS_PATH)
 
 with open(os.path.join(ABS_PATH.parent, 'config.yml'),  # type:ignore
             'r', encoding='utf-8') as f:

@@ -1,7 +1,7 @@
 import random
 import sqlite3
-from typing import Tuple
 from functools import wraps
+from typing import Tuple
 
 
 class Economy:

@@ -1,8 +1,8 @@
 import discord
+import helpers  # type:ignore
 from discord.ext import commands
 from discord.ext.commands.core import command
 from discord.ext.commands.errors import *
-import helpers  # type:ignore
 
 
 class Help(commands.Cog):

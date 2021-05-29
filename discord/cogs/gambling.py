@@ -4,11 +4,12 @@ import random
 from typing import List, Optional, Tuple, Union
 
 import discord
-import helpers   # type:ignore
-from card import Card   # type:ignore
+from helpers import *  # type:ignore
+from card import Card  # type:ignore
 from discord.ext import commands
-from economy import Economy   # type:ignore
+from economy import Economy  # type:ignore
 from PIL import Image
+
 
 DEFAULT_BET = 100
 
@@ -39,7 +40,7 @@ class Gambling(commands.Cog):
     async def money(self, ctx: commands.Context, user: discord.Member=None):
         user = user.id if user else ctx.author.id
         user = self.client.get_user(user)
-        embed = helpers.make_embed(
+        embed = make_embed(  # type:ignore
             title=user.name,
             description='**${:,}**'.format(self.economy.get_entry(user.id)[1]),
             footer=discord.Embed.Empty
@@ -54,7 +55,7 @@ class Gambling(commands.Cog):
     async def top(self, ctx):
         top_entry = self.economy.top_entry()
         user = self.client.get_user(top_entry[0])
-        embed = helpers.make_embed(
+        embed = make_embed(  # type:ignore
             title=user.name,
             description='**${:,}**'.format(top_entry[1]),
             footer=' '
@@ -102,11 +103,12 @@ class Gambling(commands.Cog):
 
     @staticmethod
     def hand_to_images(hand: List[Card]) -> List[Image.Image]:
-        return [Image.open('./cards/'+card.image) for card in hand]
+        (print(os.path.join(ABS_PATH, card.image)) for card in hand)  # type:ignore
+        return [Image.open(os.path.join(ABS_PATH, card.image)) for card in hand]  # type:ignore
 
     @staticmethod
     def center(*hands: Tuple[Image.Image]) -> Image.Image:
-        bg: Image.Image = Image.open('table.png')
+        bg: Image.Image = Image.open(os.path.join(ABS_PATH, 'table.png'))  # type:ignore
         bg_center_x = bg.size[0] // 2
         bg_center_y = bg.size[1] // 2
 
@@ -166,7 +168,7 @@ class Gambling(commands.Cog):
             async def out_table(**kwargs) -> discord.Message:
                 """Sends a picture of the current table"""
                 self.output(ctx.author.id, dealer_hand, player_hand)
-                embed = helpers.make_embed(**kwargs)
+                embed = make_embed(**kwargs)  # type:ignore
                 file = discord.File(f"{ctx.author.id}.png", filename=f"{ctx.author.id}.png")
                 embed.set_image(url=f"attachment://{ctx.author.id}.png")
                 msg: discord.Message = await ctx.send(file=file, embed=embed)

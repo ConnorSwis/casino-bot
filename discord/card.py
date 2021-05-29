@@ -1,3 +1,4 @@
+import os
 from typing import Literal
 
 
@@ -22,7 +23,10 @@ class Card:
 
     @property
     def image(self):
-        return f"{self.symbol if self.name != '10' else '10'}{self.suit[0].upper()}.png" if not self.down else "red_back.png"
+        return os.path.join(
+            './cards/',
+            f"{self.symbol if self.name != '10' else '10'}{self.suit[0].upper()}.png" if not self.down else "red_back.png"
+        )
 
     def flip(self):
         self.down = not self.down
