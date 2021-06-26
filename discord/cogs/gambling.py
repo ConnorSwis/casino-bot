@@ -70,7 +70,8 @@ class Gambling(commands.Cog):
     async def flip(self, ctx: commands.Context, choice: str, bet: int=DEFAULT_BET):
         choices = {'h': True, 't': False}
         if self.economy.get_entry(ctx.author.id)[1] >= bet and bet > 0:
-            if (choice:=choice.lower()[0]) in choices.keys():
+            choice = choice.lower()[0]
+            if choice in choices.keys():
                 if random.choice(list(choices.keys())) == choice:
                     await ctx.send('correct')
                     self.economy.add_money(ctx.author.id, bet)

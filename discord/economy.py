@@ -52,8 +52,8 @@ class Economy:
             Tuple[int, int]: The ID of the user and their money
         """
         self.cur.execute("SELECT * FROM economy WHERE user_id=:user_id", {'user_id': user_id})
-        if result:=self.cur.fetchone():
-            return result
+        result = self.cur.fetchone()
+        if result: return result
         return self.new_entry(user_id)
 
     @_commit
@@ -107,7 +107,8 @@ class Economy:
             Tuple[int, int]: The ID of the user and their money
         """
         money = self.get_entry(user_id)[1]
-        if (total:=money+money_to_add) < 0:
+        total = money+money_to_add
+        if total < 0:
             total = 0
         self.set_money(user_id, total)
         return self.get_entry(user_id)
