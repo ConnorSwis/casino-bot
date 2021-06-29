@@ -249,8 +249,6 @@ class Gambling(commands.Cog):
                 )
             os.remove(f'./{ctx.author.id}.png')
 
-        
-    
-
+            
 def setup(client: commands.Bot):
     client.add_cog(Gambling(client))
