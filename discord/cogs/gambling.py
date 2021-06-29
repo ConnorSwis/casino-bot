@@ -128,7 +128,7 @@ class Gambling(commands.Cog):
         self.center(*map(self.hand_to_images, hands)).save(f'{name}.png')
 
     @staticmethod
-    def calc_hand(hand: List[Card]) -> int:
+    def calc_hand(hand: List[List[Card]]) -> int:
         """Calculates the sum of the card values and accounts for aces"""
         non_aces = [c for c in hand if c.symbol != 'A']
         aces = [c for c in hand if c.symbol == 'A']
