@@ -9,8 +9,8 @@ Feel free to download and use for yourself!
 
 ## Installation
 
-1. Create a bot application on [Discord](https://discord.com/developers)
-2. Have [Python 3.7](https://python.org) or later installed.
+1. Create a bot application on [Discord](https://discord.com/developers){:target="_blank"}
+2. Have [Python 3.7](https://python.org){:target="_blank"} or later installed.
 3. Clone the repository
 4. Install requirements from [requirements.txt](requirements.txt)
 5. Configure [config.yml](config.yml)
