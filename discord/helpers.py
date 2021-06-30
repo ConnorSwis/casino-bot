@@ -1,6 +1,5 @@
 import os
 import pathlib
-import random
 from datetime import datetime
 
 import yaml

@@ -24,7 +24,9 @@ class Card:
     def image(self):
         return os.path.join(
             './cards/',
-            f"{self.symbol if self.name != '10' else '10'}{self.suit[0].upper()}.png" if not self.down else "red_back.png"
+            f"{self.symbol if self.name != '10' else '10'}"\
+            f"{self.suit[0].upper()}.png" \
+            if not self.down else "red_back.png"
         )
 
     def flip(self):

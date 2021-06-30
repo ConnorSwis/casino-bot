@@ -12,7 +12,9 @@ class Handlers(commands.Cog, name='handlers'):
     async def on_ready(self):
         print(self.client.user.name + " is ready")
         try:
-            await self.client.change_presence(activity=discord.Game(f"blackjack | {PREFIX}help"))
+            await self.client.change_presence(
+                activity=discord.Game(f"blackjack | {PREFIX}help")
+                )
         except:
             pass
 
@@ -27,21 +29,23 @@ class Handlers(commands.Cog, name='handlers'):
         elif isinstance(error, CommandNotFound):
             await self.client.get_command('help')(ctx)
 
-        elif isinstance(error, (MissingRequiredArgument, TooManyArguments, BadArgument)):
+        elif isinstance(error, (MissingRequiredArgument,
+                                TooManyArguments, BadArgument)):
             await self.client.get_command('help')(ctx, ctx.command.name)
 
         elif isinstance(error, (UserNotFound, MemberNotFound)):
             await ctx.send(f"Member, `{error.argument}`, was not found.")
 
         elif isinstance(error, MissingPermissions):
-            await ctx.send("Must have following permission(s): " + ", ".join([f'`{perm}`' for perm in error.missing_perms]))
+            await ctx.send("Must have following permission(s): " + 
+            ", ".join([f'`{perm}`' for perm in error.missing_perms]))
 
         elif isinstance(error, BotMissingPermissions):
-            await ctx.send("I must have following permission(s): " + ", ".join([f'`{perm}`' for perm in error.missing_perms]))
+            await ctx.send("I must have following permission(s): " +
+            ", ".join([f'`{perm}`' for perm in error.missing_perms]))
 
         elif isinstance(error, InsufficientFundsException):
             await self.client.get_command('money')(ctx)
-
         
         else:
             raise error
