@@ -31,14 +31,14 @@ class Gambling(commands.Cog):
         self.economy.set_money(user_id, money)
 
     @commands.command(
-        brief=f"Gives you ${DEFAULT_BET*5} once every 24hrs",
+        brief=f"Gives you ${DEFAULT_BET*B_MULT} once every {B_COOLDOWN}hrs",
         usage="add"
     )
-    @commands.cooldown(1, 86400, type=commands.BucketType.user)
+    @commands.cooldown(1, B_COOLDOWN*3600, type=commands.BucketType.user)
     async def add(self, ctx: commands.Context):
-        amount = DEFAULT_BET*5
+        amount = DEFAULT_BET*B_MULT
         self.economy.add_money(ctx.author.id, amount)
-        await ctx.send(f"Added ${amount} come back in 24hrs")
+        await ctx.send(f"Added ${amount} come back in {B_COOLDOWN}hrs")
 
     @commands.command(
         brief="How much money you or someone else has",

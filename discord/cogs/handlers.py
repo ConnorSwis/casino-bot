@@ -46,6 +46,15 @@ class Handlers(commands.Cog, name='handlers'):
 
         elif isinstance(error, InsufficientFundsException):
             await self.client.get_command('money')(ctx)
+
+        elif isinstance(error, CommandOnCooldown):
+            s = int(error.retry_after)
+            s = s % (24 * 3600)
+            h = s // 3600
+            s %= 3600
+            m = s // 60
+            s %= 60
+            await ctx.send(f'{h}hrs {m}min {s}sec remaining.')
         
         else:
             raise error

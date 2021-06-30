@@ -5,11 +5,10 @@ from discord.ext import commands
 from helpers import *  # type:ignore
 
 
-intents = discord.Intents.all()
 client = commands.Bot(
     command_prefix=PREFIX,  # type:ignore
-    owner_ids=owner_ids,  # type:ignore
-    intents=intents
+    owner_ids=OWNER_IDS,  # type:ignore
+    intents=discord.Intents.all()
 )
 
 client.remove_command('help')

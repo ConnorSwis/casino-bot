@@ -25,8 +25,10 @@ with open(os.path.join(ABS_PATH.parent, 'config.yml'),  # type:ignore
 
 TOKEN = config.get('token')
 PREFIX = config.get('prefix', '$')
-owner_ids = config.get('owner_ids')
+OWNER_IDS = config.get('owner_ids')
 DEFAULT_BET = config.get('default_bet', 100)
+B_MULT = config.get('bonus_multiplier', 5)
+B_COOLDOWN = config.get('bonus_cooldown', 12)
 
 
 def make_embed(title=None, description=None, color=None, author=None,
