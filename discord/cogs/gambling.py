@@ -192,6 +192,7 @@ class Gambling(commands.Cog):
             player_score = self.calc_hand(player_hand)
             dealer_score = self.calc_hand(dealer_hand)
             if player_score == 21:  # win condition
+                bet = int(bet*1.5)
                 self.economy.add_money(ctx.author.id, bet)
                 result = ("Blackjack!", 'won')
                 break
