@@ -1,12 +1,12 @@
 import asyncio
 import os
 import random
-from typing import List, Optional, Tuple, Union
+from typing import List, Tuple, Union
 
 import discord
 from card import Card  # type:ignore
 from discord.ext import commands
-from discord.ext.commands.errors import BadArgument, MissingRequiredArgument
+from discord.ext.commands.errors import BadArgument
 from economy import Economy  # type:ignore
 from helpers import *  # type:ignore
 from PIL import Image
