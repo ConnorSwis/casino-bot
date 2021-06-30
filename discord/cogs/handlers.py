@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands.errors import *
+from helpers import PREFIX, InsufficientFundsException
 
 
 class Handlers(commands.Cog, name='handlers'):
@@ -11,7 +12,7 @@ class Handlers(commands.Cog, name='handlers'):
     async def on_ready(self):
         print(self.client.user.name + " is ready")
         try:
-            await self.client.change_presence(activity=discord.Game("blackjack | $help"))
+            await self.client.change_presence(activity=discord.Game(f"blackjack | {PREFIX}help"))
         except:
             pass
 
@@ -19,11 +20,14 @@ class Handlers(commands.Cog, name='handlers'):
     async def on_command_error(self, ctx: commands.Context, error):
         if hasattr(ctx.command, 'on_error'):
             return
-        ignored = (MissingPermissions, )
-        if isinstance(error, CommandNotFound):
+
+        if isinstance(error, CommandInvokeError):
+            await self.on_command_error(ctx, error.original)
+        
+        elif isinstance(error, CommandNotFound):
             await self.client.get_command('help')(ctx)
 
-        elif isinstance(error, (MissingRequiredArgument, TooManyArguments)):
+        elif isinstance(error, (MissingRequiredArgument, TooManyArguments, BadArgument)):
             await self.client.get_command('help')(ctx, ctx.command.name)
 
         elif isinstance(error, (UserNotFound, MemberNotFound)):
@@ -35,6 +39,10 @@ class Handlers(commands.Cog, name='handlers'):
         elif isinstance(error, BotMissingPermissions):
             await ctx.send("I must have following permission(s): " + ", ".join([f'`{perm}`' for perm in error.missing_perms]))
 
+        elif isinstance(error, InsufficientFundsException):
+            await self.client.get_command('money')(ctx)
+
+        
         else:
             raise error
 

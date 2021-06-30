@@ -8,6 +8,15 @@ import yaml
 import discord
 
 
+class InsufficientFundsException(Exception):
+    def __init__(self, current, bet) -> None:
+        self.needs = bet - current
+        super().__init__()
+
+    def __str__(self) -> str:
+        return f"${self.needs} more needed to play."
+
+
 ABS_PATH = pathlib.Path(__file__).parent.absolute()
 COG_FOLDER = os.path.join(ABS_PATH, 'cogs/')
 

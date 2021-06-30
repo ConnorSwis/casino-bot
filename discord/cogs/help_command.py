@@ -24,7 +24,7 @@ class Help(commands.Cog):
         else:
             com = self.client.get_command(request)
             if not com:
-                await ctx.send(f"Command '{request}' doesn't exist")
+                await self.get_commands('help')(ctx)
                 return
             embed = helpers.make_embed(title=com.name, description=com.brief, footer="* optional")                       
             embed.add_field(name='Usage:', value='`'+self.client.command_prefix+com.usage+'`')
