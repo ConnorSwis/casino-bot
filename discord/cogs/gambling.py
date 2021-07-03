@@ -123,7 +123,7 @@ class Gambling(commands.Cog):
         for hand in hands:
             start_x = bg_center_x - (((len(hand)*img_w) + ((len(hand) - 1) * 10)) // 2)
             for card in hand:
-                bg.paste(card, (start_x, start_y))
+                bg.alpha_composite(card, (start_x, start_y))
                 start_x += img_w + 10
             start_y += img_h + 15
         return bg
