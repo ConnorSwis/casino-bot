@@ -1,0 +1,1 @@
+from cogs.gambling.slots_cog import Slots

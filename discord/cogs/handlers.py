@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands.errors import *
-from helpers import PREFIX, InsufficientFundsException
+from modules.helpers import PREFIX, InsufficientFundsException
 
 
 class Handlers(commands.Cog, name='handlers'):
@@ -58,6 +58,3 @@ class Handlers(commands.Cog, name='handlers'):
         
         else:
             raise error
-
-def setup(client: commands.Bot):
-    client.add_cog(Handlers(client))

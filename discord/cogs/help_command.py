@@ -1,8 +1,8 @@
-import helpers  # type:ignore
+import modules.helpers as helpers  # type:ignore
 from discord.ext import commands
 
 
-class Help(commands.Cog):
+class Help(commands.Cog, name='help'):
     def __init__(self, client: commands.Bot):
         self.client = client
 

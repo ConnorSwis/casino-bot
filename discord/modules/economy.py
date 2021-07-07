@@ -15,9 +15,9 @@ class Economy:
         self.cur = self.conn.cursor()
         self.cur.execute("""CREATE TABLE IF NOT EXISTS economy (
             user_id INTEGER NOT NULL PRIMARY KEY,
-            money INTEGER NOT NULL
+            money INTEGER NOT NULL DEFAULT 0,
+            credits INTEGER NOT NULL DEFAULT 0
         )""")
-        
 
     def close(self):
         """Safely closes the database"""
