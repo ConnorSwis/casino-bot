@@ -22,8 +22,7 @@ class Card:
 
     @property
     def image(self):
-        return os.path.join(
-            './cards/',
+        return (
             f"{self.symbol if self.name != '10' else '10'}"\
             f"{self.suit[0].upper()}.png" \
             if not self.down else "red_back.png"

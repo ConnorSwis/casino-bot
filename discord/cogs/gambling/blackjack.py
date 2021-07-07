@@ -18,12 +18,15 @@ class Blackjack(Gambling):
 
     @staticmethod
     def hand_to_images(hand: List[Card]) -> List[Image.Image]:
-        return [Image.open(os.path.join(ABS_PATH, card.image)) for card in hand]  # type:ignore
+        return ([
+            Image.open(os.path.join(ABS_PATH, 'modules/cards/', card.image))
+            for card in hand
+        ])
 
     @staticmethod
     def center(*hands: Tuple[Image.Image]) -> Image.Image:
         """Creates blackjack table with cards placed"""
-        bg: Image.Image = Image.open(os.path.join(ABS_PATH, 'table.png'))  # type:ignore
+        bg: Image.Image = Image.open(os.path.join(ABS_PATH, 'modules/', 'table.png'))  # type:ignore
         bg_center_x = bg.size[0] // 2
         bg_center_y = bg.size[1] // 2
 
