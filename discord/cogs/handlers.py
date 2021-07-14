@@ -27,11 +27,11 @@ class Handlers(commands.Cog, name='handlers'):
             await self.on_command_error(ctx, error.original)
         
         elif isinstance(error, CommandNotFound):
-            await self.client.get_command('help')(ctx)
+            await ctx.invoke(self.client.get_command('help'))
 
         elif isinstance(error, (MissingRequiredArgument,
                                 TooManyArguments, BadArgument)):
-            await self.client.get_command('help')(ctx, ctx.command.name)
+            await ctx.invoke(self.client.get_command('help'), ctx.command.name)
 
         elif isinstance(error, (UserNotFound, MemberNotFound)):
             await ctx.send(f"Member, `{error.argument}`, was not found.")
@@ -45,7 +45,7 @@ class Handlers(commands.Cog, name='handlers'):
             ", ".join([f'`{perm}`' for perm in error.missing_perms]))
 
         elif isinstance(error, InsufficientFundsException):
-            await self.client.get_command('money')(ctx)
+            await ctx.invoke(self.client.get_command('money'))
 
         elif isinstance(error, CommandOnCooldown):
             s = int(error.retry_after)

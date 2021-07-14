@@ -3,6 +3,7 @@ import os
 import random
 from typing import List, Tuple, Union
 
+import discord
 from discord.ext import commands
 from modules.card import Card
 from modules.helpers import *
@@ -13,6 +14,7 @@ from .gambling import Gambling
 
 class Blackjack(Gambling):
     def __init__(self, client: commands.Bot):
+        self.client = client
         super().__init__(client)
     
 
@@ -26,16 +28,20 @@ class Blackjack(Gambling):
     @staticmethod
     def center(*hands: Tuple[Image.Image]) -> Image.Image:
         """Creates blackjack table with cards placed"""
-        bg: Image.Image = Image.open(os.path.join(ABS_PATH, 'modules/', 'table.png'))  # type:ignore
+        bg: Image.Image = Image.open(
+            os.path.join(ABS_PATH, 'modules/', 'table.png')
+        )
         bg_center_x = bg.size[0] // 2
         bg_center_y = bg.size[1] // 2
 
         img_w = hands[0][0].size[0]
         img_h = hands[0][0].size[1]
 
-        start_y = bg_center_y - (((len(hands)*img_h) + ((len(hands) - 1) * 15)) // 2)
+        start_y = bg_center_y - (((len(hands)*img_h) + \
+            ((len(hands) - 1) * 15)) // 2)
         for hand in hands:
-            start_x = bg_center_x - (((len(hand)*img_w) + ((len(hand) - 1) * 10)) // 2)
+            start_x = bg_center_x - (((len(hand)*img_w) + \
+                ((len(hand) - 1) * 10)) // 2)
             for card in hand:
                 bg.alpha_composite(card, (start_x, start_y))
                 start_x += img_w + 10
@@ -69,13 +75,13 @@ class Blackjack(Gambling):
     )
     async def blackjack(self, ctx: commands.Context, bet: int=DEFAULT_BET):
         self.check_bet(ctx, bet)
-        deck: List[Card] = [Card(suit, num) for num in range(2,15) for suit in Card.suits]
+        deck = [Card(suit, num) for num in range(2,15) for suit in Card.suits]
         random.shuffle(deck) # Generate deck and shuffle it
 
         player_hand: List[Card] = []
         dealer_hand: List[Card] = []
 
-        player_hand.append(deck.pop())  # Deal first hands
+        player_hand.append(deck.pop())
         dealer_hand.append(deck.pop())
         player_hand.append(deck.pop())
         dealer_hand.append(deck.pop().flip())
@@ -86,13 +92,18 @@ class Blackjack(Gambling):
         async def out_table(**kwargs) -> discord.Message:
             """Sends a picture of the current table"""
             self.output(ctx.author.id, dealer_hand, player_hand)
-            embed = make_embed(**kwargs)  # type:ignore
-            file = discord.File(f"{ctx.author.id}.png", filename=f"{ctx.author.id}.png")
+            embed = make_embed(**kwargs)
+            file = discord.File(
+                f"{ctx.author.id}.png", filename=f"{ctx.author.id}.png"
+            )
             embed.set_image(url=f"attachment://{ctx.author.id}.png")
             msg: discord.Message = await ctx.send(file=file, embed=embed)
             return msg
         
-        def check(reaction: discord.Reaction, user: Union[discord.Member, discord.User]) -> bool:
+        def check(
+            reaction: discord.Reaction,
+            user: Union[discord.Member, discord.User]
+        ) -> bool:
             return all((
                 str(reaction.emoji) in ("🇸", "🇭"),  # correct emoji
                 user == ctx.author,                  # correct user
@@ -114,13 +125,19 @@ class Blackjack(Gambling):
                 self.economy.add_money(ctx.author.id, bet*-1)
                 result = ("Player busts", 'lost')
                 break
-            msg = await out_table(title="Your Turn", description=f"Your hand: {player_score}\nDealer's hand: {dealer_score}")
+            msg = await out_table(
+                title="Your Turn",
+                description=f"Your hand: {player_score}\n" \
+                    f"Dealer's hand: {dealer_score}"
+            )
             await msg.add_reaction("🇭")
             await msg.add_reaction("🇸")
             
             try:  # reaction command
-                reaction, _ = await self.client.wait_for('reaction_add', timeout=60, check=check)
-            except asyncio.exceptions.TimeoutError:
+                reaction, _ = await self.client.wait_for(
+                    'reaction_add', timeout=60, check=check
+                )
+            except asyncio.TimeoutError:
                 await msg.delete()
 
             if str(reaction.emoji) == "🇭":
@@ -155,7 +172,11 @@ class Blackjack(Gambling):
                 self.economy.add_money(ctx.author.id, bet)
                 result = ("You win!", 'won')
 
-        color = discord.Color.red() if result[1] == 'lost' else discord.Color.green() if result[1] == 'won' else discord.Color.blue()
+        color = (
+            discord.Color.red() if result[1] == 'lost'
+            else discord.Color.green() if result[1] == 'won'
+            else discord.Color.blue()
+        )
         try:
             await msg.delete()
         except:
@@ -163,7 +184,9 @@ class Blackjack(Gambling):
         msg = await out_table(
             title=result[0],
             color=color,
-            description=f"**You {result[1]} ${bet}**\n" \
-                        f"Your hand: {player_score}\nDealer's hand: {dealer_score}"
+            description=(
+                f"**You {result[1]} ${bet}**\nYour hand: {player_score}\n" +
+                f"Dealer's hand: {dealer_score}"
             )
+        )
         os.remove(f'./{ctx.author.id}.png')
