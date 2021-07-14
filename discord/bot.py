@@ -15,7 +15,7 @@ client = commands.Bot(
 client.remove_command('help')
 
 COGS = [Help, Handlers, Slots]
-for cog in COGS:
-    client.add_cog(cog(client))
+for Cog in COGS:
+    client.add_cog(Cog(client))
 
 client.run(TOKEN)
