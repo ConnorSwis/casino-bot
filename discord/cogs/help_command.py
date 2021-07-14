@@ -1,6 +1,8 @@
+import os
 import discord
-from modules.helpers import make_embed
+from modules.helpers import ABS_PATH, make_embed
 from discord.ext import commands
+import os
 
 
 class Help(commands.Cog, name='help'):
@@ -17,8 +19,7 @@ class Help(commands.Cog, name='help'):
             embed = make_embed(title="Commands")
             commands_list = [
                 (
-                    name,
-                    [command for command in cog.get_commands()\
+                    name, [command for command in cog.get_commands()\
                         if not command.hidden]
                 ) for name, cog in self.client.cogs.items()
             ]
@@ -30,8 +31,11 @@ class Help(commands.Cog, name='help'):
                             [f'{self.client.command_prefix}{command}'
                                 for command in cog_commands]
                         ),
-                        inline=True
-                        )
+                        inline=False
+                    )
+            fp = os.path.join(ABS_PATH, 'modules/cards/aces.png')
+            file = discord.File(fp, filename='aces.png')
+            embed.set_thumbnail(url=f"attachment://aces.png")
         else:
             com = self.client.get_command(request)
             if not com:
@@ -44,7 +48,8 @@ class Help(commands.Cog, name='help'):
                 name='Usage:',
                 value='`'+self.client.command_prefix+com.usage+'`'
             )
-        await ctx.send(embed=embed)
+            file = None
+        await ctx.send(file=file, embed=embed)
 
 
     @commands.command(hidden=True)

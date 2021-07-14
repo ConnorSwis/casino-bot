@@ -6,16 +6,15 @@ from typing import List, Tuple, Union
 import discord
 from discord.ext import commands
 from modules.card import Card
+from modules.economy import Economy
 from modules.helpers import *
 from PIL import Image
 
-from .gambling import Gambling
 
-
-class Blackjack(Gambling):
+class Blackjack(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
-        super().__init__(client)
+        self.economy = Economy()
     
 
     @staticmethod
@@ -190,3 +189,6 @@ class Blackjack(Gambling):
             )
         )
         os.remove(f'./{ctx.author.id}.png')
+
+def setup(client: commands.Bot):
+    client.add_cog(Blackjack(client))

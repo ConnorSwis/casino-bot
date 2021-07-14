@@ -1,20 +1,18 @@
 import bisect
 import os
-from pathlib import Path
 import random
 
 import discord
 from discord.ext import commands
-from modules.helpers import ABS_PATH, make_embed
+from modules.economy import Economy
+from modules.helpers import ABS_PATH, DEFAULT_BET, make_embed
 from PIL import Image
 
-from .blackjack import Blackjack
 
-
-class Slots(Blackjack, name='Gambling'):
+class Slots(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
-        super().__init__(self.client)
+        self.economy = Economy()
 
     @commands.command(
         brief='Slot machine\nbet must be 1-3',
@@ -93,7 +91,7 @@ class Slots(Blackjack, name='Gambling'):
         )
 
         file = discord.File(fp, filename=fp)
-        embed.set_image(url=f"attachment://{fp}") # none of this makes sense to me :)
+        embed.set_thumbnail(url=f"attachment://{fp}") # none of this makes sense to me :)
         await ctx.send(
             file=file,
             embed=embed
@@ -101,3 +99,32 @@ class Slots(Blackjack, name='Gambling'):
 
         os.remove(fp)
 
+    @commands.command(
+        brief=f"Purchase credits. Each credit is worth ${DEFAULT_BET}.",
+        usage="buyc [credits]",
+        aliases=["buy", "b"]
+    )
+    async def buyc(self, ctx: commands.Context, amount_to_buy: int):
+        user_id = ctx.author.id
+        profile = self.economy.get_entry(user_id)
+        cost = amount_to_buy * DEFAULT_BET
+        if profile[1] >= cost:
+            self.economy.add_money(user_id, cost*-1)
+            self.economy.add_credits(user_id, amount_to_buy)
+        await ctx.invoke(self.client.get_command('money'))
+
+    @commands.command(
+        brief=f'Sell credits. Each credit is worth ${DEFAULT_BET}.',
+        usage="sellc [credits]",
+        aliases=["sell", "s"]
+    )
+    async def sellc(self, ctx: commands.Context, amount_to_sell: int):
+        user_id = ctx.author.id
+        profile = self.economy.get_entry(user_id)
+        if profile[2] >= amount_to_sell:
+            self.economy.add_credits(user_id, amount_to_sell*-1)
+            self.economy.add_money(user_id, amount_to_sell*DEFAULT_BET)
+        await ctx.invoke(self.client.get_command('money'))
+
+def setup(client: commands.Bot):
+    client.add_cog(Slots(client))

@@ -1,7 +1,4 @@
 import discord
-from cogs.gambling import Slots
-from cogs.handlers import Handlers
-from cogs.help_command import Help
 from discord.ext import commands
 from modules.helpers import *
 
@@ -14,8 +11,8 @@ client = commands.Bot(
 
 client.remove_command('help')
 
-COGS = [Help, Handlers, Slots]
-for Cog in COGS:
-    client.add_cog(Cog(client))
+for filename in os.listdir(COG_FOLDER):
+    if filename.endswith('.py'):
+        client.load_extension(f'cogs.{filename[:-3]}')
 
 client.run(TOKEN)
