@@ -16,6 +16,17 @@ class Blackjack(commands.Cog):
         self.client = client
         self.economy = Economy()
     
+    def check_bet(
+        self,
+        ctx: commands.Context,
+        bet: int=DEFAULT_BET,
+    ):
+        bet = int(bet)
+        if bet <= 0:
+            raise commands.errors.BadArgument()
+        current = self.economy.get_entry(ctx.author.id)[1]
+        if bet > current:
+            raise InsufficientFundsException(current, bet)
 
     @staticmethod
     def hand_to_images(hand: List[Card]) -> List[Image.Image]:

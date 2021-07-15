@@ -1,11 +1,12 @@
 # Casino Bot
-Casino bot is a gambling discord bot I have been working on.
+Casino bot is a gambling discord bot I made for my friends.
 
-It is able to black blackjack, flip a coin, and roll dice. It has its own economy stored on its own database.
+It is able to play blackjack, slots, flip a coin, and roll dice. It stores everyone's money on an SQLite3 database.
 
 Feel free to download and use for yourself!
 
-![picture](https://raw.githubusercontent.com/ConnorSwis/casino-bot/main/picture.png)
+<img src="./pictures/blackjack.png" alt="blackjack" height="200"/>
+<img src="./pictures/slots.gif" alt="slots" width="200"/>
 
 ## Installation
 

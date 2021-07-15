@@ -9,31 +9,13 @@ class GamblingHelpers(commands.Cog, name='General'):
         self.client = client
         self.economy = Economy()
 
-    def check_bet(
-        self,
-        ctx: commands.Context,
-        bet: int=DEFAULT_BET,
-        credits=False
-    ):
-        bet = int(bet)
-        if bet <= 0:
-            raise commands.errors.BadArgument()
-        if credits:
-            if bet > 3:
-                raise commands.errors.BadArgument()
-            current = self.economy.get_entry(ctx.author.id)[2]
-        else:
-            current = self.economy.get_entry(ctx.author.id)[1]
-        if bet > current:
-            raise InsufficientFundsException(current, bet)
-
     @commands.command(hidden=True)
     @commands.is_owner()
     async def set(
         self,
         ctx: commands.Context,
         user_id: int=None,
-        money: int=None,
+        money: int=0,
         credits: int=0
     ):
         if money:

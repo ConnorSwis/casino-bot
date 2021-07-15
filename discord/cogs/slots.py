@@ -5,7 +5,7 @@ import random
 import discord
 from discord.ext import commands
 from modules.economy import Economy
-from modules.helpers import ABS_PATH, DEFAULT_BET, make_embed
+from modules.helpers import *
 from PIL import Image
 
 
@@ -14,12 +14,20 @@ class Slots(commands.Cog):
         self.client = client
         self.economy = Economy()
 
+    def check_bet(self, ctx: commands.Context, bet: int=DEFAULT_BET):
+        bet = int(bet)
+        if bet <= 0 or bet > 3:
+            raise commands.errors.BadArgument()
+        current = self.economy.get_entry(ctx.author.id)[2]
+        if bet > current:
+            raise InsufficientFundsException(current, bet)
+
     @commands.command(
         brief='Slot machine\nbet must be 1-3',
         usage='slots *[bet]'
     )
     async def slots(self, ctx: commands.Context, bet: int=1):
-        self.check_bet(ctx, bet=bet, credits=True)
+        self.check_bet(ctx, bet=bet)
         path = os.path.join(ABS_PATH, 'modules/')
         facade = Image.open(f'{path}slot-face.png').convert('RGBA')
         reel = Image.open(f'{path}slot-reel.png').convert('RGBA')
@@ -91,7 +99,7 @@ class Slots(commands.Cog):
         )
 
         file = discord.File(fp, filename=fp)
-        embed.set_thumbnail(url=f"attachment://{fp}") # none of this makes sense to me :)
+        embed.set_image(url=f"attachment://{fp}") # none of this makes sense to me :)
         await ctx.send(
             file=file,
             embed=embed
