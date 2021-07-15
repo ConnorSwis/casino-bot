@@ -73,20 +73,18 @@ class GamblingHelpers(commands.Cog, name='General'):
 
     @commands.command(
         brief="Shows the user with the most money",
-        usage="top"
+        usage="leaderboard",
+        aliases=["top"]
     )
-    async def top(self, ctx):
-        top_entry = self.economy.top_entries(1)[0]
-        user = self.client.get_user(top_entry[0])
-        embed = make_embed(
-            title=user.name,
-            description=(
-                '**${:,}**'.format(top_entry[1]) +
-                '\n**{:,}** credits'.format(top_entry[2])
-            ),
-            footer=' '
-        )
-        embed.set_thumbnail(url=user.avatar_url)
+    async def leaderboard(self, ctx):
+        entries = self.economy.top_entries(5)
+        embed = make_embed(title='Leaderboard:', color=discord.Color.gold())
+        for i, entry in enumerate(entries):
+            embed.add_field(
+                name=f"{i+1}. {self.client.get_user(entry[0]).name}",
+                value=f'${entry[1]}',
+                inline=True
+            )
         await ctx.send(embed=embed)
 
 def setup(client: commands.Bot):
