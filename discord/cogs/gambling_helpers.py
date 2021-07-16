@@ -65,7 +65,7 @@ class GamblingHelpers(commands.Cog, name='General'):
             embed.add_field(
                 name=f"{i+1}. {self.client.get_user(entry[0]).name}",
                 value=f'${entry[1]}',
-                inline=True
+                inline=False
             )
         await ctx.send(embed=embed)
 
