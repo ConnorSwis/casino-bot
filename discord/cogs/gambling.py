@@ -3,7 +3,7 @@ import random
 from discord.ext import commands
 from discord.ext.commands.errors import BadArgument
 from modules.economy import Economy
-from modules.helpers import DEFAULT_BET
+from modules.helpers import DEFAULT_BET, InsufficientFundsException
 
 
 class Gambling(commands.Cog):
@@ -11,6 +11,17 @@ class Gambling(commands.Cog):
         self.client = client
         self.economy = Economy()
 
+    def check_bet(
+        self,
+        ctx: commands.Context,
+        bet: int=DEFAULT_BET,
+    ):
+        bet = int(bet)
+        if bet <= 0:
+            raise commands.errors.BadArgument()
+        current = self.economy.get_entry(ctx.author.id)[1]
+        if bet > current:
+            raise InsufficientFundsException(current, bet)
 
     @commands.command(
         brief="Flip a coin\nBet must be greater than $0",
@@ -22,8 +33,8 @@ class Gambling(commands.Cog):
         choice: str,
         bet: int=DEFAULT_BET
     ):
-        choices = {'h': True, 't': False}
         self.check_bet(ctx, bet)
+        choices = {'h': True, 't': False}
         choice = choice.lower()[0]
         if choice in choices.keys():
             if random.choice(list(choices.keys())) == choice:
@@ -45,8 +56,8 @@ class Gambling(commands.Cog):
         choice: int,
         bet: int=DEFAULT_BET
     ):
-        choices = range(1,7)
         self.check_bet(ctx, bet)
+        choices = range(1,7)
         if choice in choices:
             if random.choice(choices) == choice:
                 await ctx.send('correct')
