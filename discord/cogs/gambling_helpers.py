@@ -62,11 +62,20 @@ class GamblingHelpers(commands.Cog, name='General'):
         entries = self.economy.top_entries(5)
         embed = make_embed(title='Leaderboard:', color=discord.Color.gold())
         for i, entry in enumerate(entries):
+            user = self.client.get_user(entry[0])
+            if user:
+                embed.add_field(
+                    name=f"{i+1}. {self.client.get_user(entry[0]).name}",
+                    value='${:,}'.format(entry[1]),
+                    inline=False
+            )
+        else:
             embed.add_field(
-                name=f"{i+1}. {self.client.get_user(entry[0]).name}",
+                name=f"{i+1}. Unknown User",
                 value='${:,}'.format(entry[1]),
                 inline=False
             )
+            
         await ctx.send(embed=embed)
 
 def setup(client: commands.Bot):
