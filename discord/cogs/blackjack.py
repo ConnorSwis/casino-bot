@@ -19,7 +19,9 @@ class Blackjack(commands.Cog):
     def check_bet(
         self,
         ctx: commands.Context,
+        current: int,
         bet: int=DEFAULT_BET,
+        
     ):
         bet = int(bet)
         if bet <= 0:
@@ -84,7 +86,8 @@ class Blackjack(commands.Cog):
         usage=f"blackjack [bet- default=${DEFAULT_BET}]"
     )
     async def blackjack(self, ctx: commands.Context, bet: int=DEFAULT_BET):
-        self.check_bet(ctx, bet)
+        current = self.economy.get_entry(ctx.author.id)[1]
+        self.check_bet(ctx, bet, current)
         deck = [Card(suit, num) for num in range(2,15) for suit in Card.suits]
         random.shuffle(deck) # Generate deck and shuffle it
 
@@ -115,13 +118,16 @@ class Blackjack(commands.Cog):
             user: Union[discord.Member, discord.User]
         ) -> bool:
             return all((
-                str(reaction.emoji) in ("🇸", "🇭"),  # correct emoji
+                str(reaction.emoji) in ("🇸", "🇭", "🇩"),  # correct emoji
                 user == ctx.author,                  # correct user
                 user != self.client.user,           # isn't the bot
                 reaction.message == msg            # correct message
             ))
 
         standing = False
+        
+        result = ("", "")
+        
 
         while True:
             player_score = self.calc_hand(player_hand)
@@ -142,7 +148,7 @@ class Blackjack(commands.Cog):
             )
             await msg.add_reaction("🇭")
             await msg.add_reaction("🇸")
-            
+            await msg.add_reaction("🇩")
             try:  # reaction command
                 reaction, _ = await self.client.wait_for(
                     'reaction_add', timeout=60, check=check
@@ -154,6 +160,14 @@ class Blackjack(commands.Cog):
                 player_hand.append(deck.pop())
                 await msg.delete()
                 continue
+            elif str(reaction.emoji) == "🇩":
+                if bet * 2 > current:
+                    await ctx.send(" You do not have enough $ to double down.")
+                    continue
+                bet *= 2
+                player_hand.append(deck.pop())
+                standing = True
+                break
             elif str(reaction.emoji) == "🇸":
                 standing = True
                 break
@@ -166,10 +180,13 @@ class Blackjack(commands.Cog):
             while dealer_score < 17:  # dealer draws until 17 or greater
                 dealer_hand.append(deck.pop())
                 dealer_score = self.calc_hand(dealer_hand)
-
-            if dealer_score == 21:  # winning/losing conditions
-                self.economy.add_money(ctx.author.id, bet*-1)
-                result = ('Dealer blackjack', 'lost')
+            if dealer_score == 21:
+                if len(dealer_hand) == 2: # winning/losing conditions
+                    self.economy.add_money(ctx.author.id, bet*-1)
+                    result = ('Dealer blackjack', 'lost')
+            elif player_score > 21:  # losing condition
+                self.economy.add_money(ctx.author.id, bet * -1) #new logic
+                result = ("Player busts", 'lost')
             elif dealer_score > 21:
                 self.economy.add_money(ctx.author.id, bet)
                 result = ("Dealer busts", 'won')
@@ -181,6 +198,12 @@ class Blackjack(commands.Cog):
             elif dealer_score < player_score:
                 self.economy.add_money(ctx.author.id, bet)
                 result = ("You win!", 'won')
+            else:
+                self.economy.add_money(ctx.author.id, bet) # new
+                result = ("You win!", 'won')
+    
+            
+                   
 
         color = (
             discord.Color.red() if result[1] == 'lost'

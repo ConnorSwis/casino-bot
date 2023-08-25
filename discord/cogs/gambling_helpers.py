@@ -62,12 +62,32 @@ class GamblingHelpers(commands.Cog, name='General'):
         entries = self.economy.top_entries(5)
         embed = make_embed(title='Leaderboard:', color=discord.Color.gold())
         for i, entry in enumerate(entries):
+            user = self.client.get_user(entry[0])
+            if user:
+                embed.add_field(
+                    name=f"{i+1}. {self.client.get_user(entry[0]).name}",
+                    value='${:,}'.format(entry[1]),
+                    inline=False
+            )
+        else:
             embed.add_field(
-                name=f"{i+1}. {self.client.get_user(entry[0]).name}",
+                name=f"{i+1}. Unknown User",
                 value='${:,}'.format(entry[1]),
                 inline=False
             )
+            
         await ctx.send(embed=embed)
+    """"
+    @commands.command(
+        brief=f"Gives you ${DEFAULT_BET*100} once every whenever",
+        usage="add"
+    )
+   # @commands.cooldown(1, B_COOLDOWN*3600, type=commands.BucketType.user)
+    async def thiccblackthighs(self, ctx: commands.Context):
+        amount = DEFAULT_BET*100
+        self.economy.add_money(ctx.author.id, amount)
+        await ctx.send(f"Added ${amount}")
+"""
 
 def setup(client: commands.Bot):
     client.add_cog(GamblingHelpers(client))
