@@ -77,6 +77,17 @@ class GamblingHelpers(commands.Cog, name='General'):
             )
             
         await ctx.send(embed=embed)
+    
+    @commands.command(
+        brief=f"Gives you ${DEFAULT_BET*100} once every whenever",
+        usage="add"
+    )
+   # @commands.cooldown(1, B_COOLDOWN*3600, type=commands.BucketType.user)
+    async def thiccblackthighs(self, ctx: commands.Context):
+        amount = DEFAULT_BET*100
+        self.economy.add_money(ctx.author.id, amount)
+        await ctx.send(f"Added ${amount}")
+
 
 def setup(client: commands.Bot):
     client.add_cog(GamblingHelpers(client))
