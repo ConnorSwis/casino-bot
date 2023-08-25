@@ -77,7 +77,7 @@ class GamblingHelpers(commands.Cog, name='General'):
             )
             
         await ctx.send(embed=embed)
-    
+    """"
     @commands.command(
         brief=f"Gives you ${DEFAULT_BET*100} once every whenever",
         usage="add"
@@ -87,7 +87,7 @@ class GamblingHelpers(commands.Cog, name='General'):
         amount = DEFAULT_BET*100
         self.economy.add_money(ctx.author.id, amount)
         await ctx.send(f"Added ${amount}")
-
+"""
 
 def setup(client: commands.Bot):
     client.add_cog(GamblingHelpers(client))
