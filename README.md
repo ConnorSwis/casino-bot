@@ -29,6 +29,7 @@ DISCORD_PREFIX=$
 DISCORD_DEFAULT_BET=100
 DISCORD_BONUS_MULTIPLIER=5
 DISCORD_BONUS_COOLDOWN=12
+CASINO_DATA_DIR=./data
 ```
 
 ## Run
@@ -39,7 +40,25 @@ uvicorn app.backend.main:app --host 0.0.0.0 --port 8000
 
 The Discord bot is started during FastAPI lifespan startup.
 
+Web demo is served at:
+
+- `http://localhost:8000/` (home page)
+- `http://localhost:8000/demo` (alias)
+
 ## Notes
 
 - Prefix commands require the **Message Content Intent** enabled in the Discord Developer Portal.
-- Economy data is stored in `economy.db` at the repo root.
+- Runtime data is stored under `CASINO_DATA_DIR` (default `./data`):
+  - SQLite DB: `./data/economy.db`
+  - Logs: `./data/logs/casino-bot.log`
+- Slots rendering defaults are tuned in code and can be tweaked in `app/discord_bot/cogs/slots.py` via `RENDER_SETTINGS`.
+- Config validation enforces: `DISCORD_DEFAULT_BET` 1-1,000,000, `DISCORD_BONUS_MULTIPLIER` 1-1,000, `DISCORD_BONUS_COOLDOWN` 1-168.
+- Database schema migrations are versioned and applied automatically on startup.
+
+## Docker Persistence
+
+Bind-mount the data directory so DB and logs survive container restarts:
+
+```bash
+docker run --env-file .env -v "$(pwd)/data:/app/data" your-image
+```

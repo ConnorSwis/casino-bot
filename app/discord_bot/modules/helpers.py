@@ -13,6 +13,15 @@ class InsufficientFundsException(Exception):
         return f"${self.needs} more needed to play."
 
 
+class InsufficientCreditsException(Exception):
+    def __init__(self, current: int, required: int) -> None:
+        self.needs = required - current
+        super().__init__()
+
+    def __str__(self) -> str:
+        return f"{self.needs} more credits needed."
+
+
 ABS_PATH = Path(__file__).resolve().parent.parent
 COG_FOLDER = str(ABS_PATH / "cogs")
 

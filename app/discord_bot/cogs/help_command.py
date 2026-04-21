@@ -10,6 +10,15 @@ class Help(commands.Cog, name="help"):
     def __init__(self, client: commands.Bot):
         self.client = client
 
+    def _format_command(self, command: commands.Command) -> str:
+        base_name = f"{self.client.command_prefix}{command.name}"
+        if not command.aliases:
+            return base_name
+        aliases = ", ".join(
+            f"{self.client.command_prefix}{alias}" for alias in command.aliases
+        )
+        return f"{base_name} ({aliases})"
+
     @commands.command(
         brief="Lists commands and gives info.",
         usage="help *command",
@@ -24,7 +33,7 @@ class Help(commands.Cog, name="help"):
                     continue
                 embed.add_field(
                     name=name,
-                    value="\n".join(f"{self.client.command_prefix}{command}" for command in cog_commands),
+                    value="\n".join(self._format_command(command) for command in cog_commands),
                     inline=False,
                 )
 
@@ -45,6 +54,12 @@ class Help(commands.Cog, name="help"):
                 name="Usage:",
                 value=f"`{self.client.command_prefix}{command.usage}`",
             )
+            if command.aliases:
+                aliases = ", ".join(
+                    f"`{self.client.command_prefix}{alias}`"
+                    for alias in command.aliases
+                )
+                embed.add_field(name="Aliases:", value=aliases)
             file = None
 
         await ctx.send(file=file, embed=embed)

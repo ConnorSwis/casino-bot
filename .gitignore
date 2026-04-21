@@ -1,4 +1,9 @@
 *.db
+data/*
+!data/.gitkeep
+!data/logs/
+data/logs/*
+!data/logs/.gitkeep
 .vscode
 
 # Byte-compiled / optimized / DLL files

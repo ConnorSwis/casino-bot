@@ -1,3 +1,7 @@
+import logging
+import ssl
+
+import aiohttp
 import discord
 from discord.ext import commands
 from discord.ext.commands.errors import (
@@ -15,7 +19,12 @@ from discord.ext.commands.errors import (
 )
 
 from app.config import config
-from app.discord_bot.modules.helpers import InsufficientFundsException
+from app.discord_bot.modules.helpers import (
+    InsufficientCreditsException,
+    InsufficientFundsException,
+)
+
+logger = logging.getLogger(__name__)
 
 
 class Handlers(commands.Cog, name="handlers"):
@@ -77,6 +86,11 @@ class Handlers(commands.Cog, name="handlers"):
             await ctx.invoke(self.client.get_command("money"))
             return
 
+        if isinstance(error, InsufficientCreditsException):
+            await ctx.send(str(error))
+            await ctx.invoke(self.client.get_command("money"))
+            return
+
         if isinstance(error, CommandOnCooldown):
             seconds = int(error.retry_after)
             seconds = seconds % (24 * 3600)
@@ -89,6 +103,23 @@ class Handlers(commands.Cog, name="handlers"):
 
         if isinstance(error, MaxConcurrencyReached):
             await ctx.send("That command is already running for you right now.")
+            return
+
+        if isinstance(error, (aiohttp.ClientError, ssl.SSLError, TimeoutError, ConnectionResetError)):
+            logger.warning(
+                "Transient network error while handling command=%s",
+                ctx.command.qualified_name if ctx.command else None,
+                exc_info=error,
+            )
+            return
+
+        if isinstance(error, discord.HTTPException) and (error.status >= 500 or error.status == 0):
+            logger.warning(
+                "Discord API transient HTTP error while handling command=%s status=%s",
+                ctx.command.qualified_name if ctx.command else None,
+                error.status,
+                exc_info=error,
+            )
             return
 
         raise error

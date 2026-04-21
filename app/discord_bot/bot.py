@@ -12,6 +12,7 @@ from app.discord_bot.cogs import (
     Help,
     Slots,
 )
+from app.discord_bot.modules.economy import Economy
 
 logger = logging.getLogger(__name__)
 
@@ -43,9 +44,16 @@ class CasinoBot(commands.Bot):
         )
         self.remove_command("help")
         self._cogs_loaded = False
+        self.economy = Economy()
 
     async def setup_hook(self) -> None:
         await register_cogs(self)
+
+    async def close(self) -> None:
+        try:
+            self.economy.close()
+        finally:
+            await super().close()
 
 
 client = CasinoBot()
