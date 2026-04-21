@@ -1,19 +1,23 @@
 import random
 import sqlite3
 from functools import wraps
+from pathlib import Path
 from typing import Tuple, List
 
 
 Entry = Tuple[int, int, int]
+DATABASE_PATH = Path(__file__).resolve().parents[3] / "economy.db"
+
 
 class Economy:
     """A wrapper for the economy database"""
+
     def __init__(self):
         self.open()
 
     def open(self):
         """Initializes the database"""
-        self.conn = sqlite3.connect('economy.db')
+        self.conn = sqlite3.connect(str(DATABASE_PATH), timeout=30)
         self.cur = self.conn.cursor()
         self.cur.execute("""CREATE TABLE IF NOT EXISTS economy (
             user_id INTEGER NOT NULL PRIMARY KEY,
@@ -27,6 +31,12 @@ class Economy:
             self.conn.commit()
             self.cur.close()
             self.conn.close()
+
+    def __del__(self):
+        try:
+            self.close()
+        except Exception:
+            pass
 
     def _commit(func):
         @wraps(func)
@@ -42,7 +52,8 @@ class Economy:
             {'user_id': user_id}
         )
         result = self.cur.fetchone()
-        if result: return result
+        if result:
+            return result
         return self.new_entry(user_id)
 
     @_commit
@@ -101,6 +112,6 @@ class Economy:
         self.cur.execute("SELECT * FROM economy")
         return random.choice(self.cur.fetchall())
 
-    def top_entries(self, n: int=0) -> List[Entry]:
+    def top_entries(self, n: int = 0) -> List[Entry]:
         self.cur.execute("SELECT * FROM economy ORDER BY money DESC")
         return (self.cur.fetchmany(n) if n else self.cur.fetchall())

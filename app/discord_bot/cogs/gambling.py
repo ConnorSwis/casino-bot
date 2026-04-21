@@ -2,8 +2,9 @@ import random
 
 from discord.ext import commands
 from discord.ext.commands.errors import BadArgument
-from modules.economy import Economy
-from modules.helpers import DEFAULT_BET, InsufficientFundsException
+from app.discord_bot.modules.economy import Economy
+from app.discord_bot.modules.helpers import InsufficientFundsException
+from app.config import config
 
 
 class Gambling(commands.Cog):
@@ -14,7 +15,7 @@ class Gambling(commands.Cog):
     def check_bet(
         self,
         ctx: commands.Context,
-        bet: int=DEFAULT_BET,
+        bet: int = config.bot.default_bet,
     ):
         bet = int(bet)
         if bet <= 0:
@@ -25,13 +26,13 @@ class Gambling(commands.Cog):
 
     @commands.command(
         brief="Flip a coin\nBet must be greater than $0",
-        usage=f"flip [heads|tails] *[bet- default=${DEFAULT_BET}]",
+        usage=f"flip [heads|tails] *[bet- default=${config.bot.default_bet}]",
     )
     async def flip(
         self,
         ctx: commands.Context,
         choice: str,
-        bet: int=DEFAULT_BET
+        bet: int = config.bot.default_bet
     ):
         self.check_bet(ctx, bet)
         choices = {'h': True, 't': False}
@@ -48,16 +49,16 @@ class Gambling(commands.Cog):
 
     @commands.command(
         brief="Roll 1 die\nBet must be greater than $0",
-        usage=f"roll [guess:1-6] [bet- default=${DEFAULT_BET}]"
+        usage=f"roll [guess:1-6] [bet- default=${config.bot.default_bet}]",
     )
     async def roll(
         self,
         ctx: commands.Context,
         choice: int,
-        bet: int=DEFAULT_BET
+        bet: int = config.bot.default_bet
     ):
         self.check_bet(ctx, bet)
-        choices = range(1,7)
+        choices = range(1, 7)
         if choice in choices:
             if random.choice(choices) == choice:
                 await ctx.send('correct')
@@ -68,5 +69,6 @@ class Gambling(commands.Cog):
         else:
             raise BadArgument()
 
-def setup(client: commands.Bot):
-    client.add_cog(Gambling(client))
+
+async def setup(client: commands.Bot):
+    await client.add_cog(Gambling(client))
