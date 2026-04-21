@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Casino bot avatar">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2f3f71" />
+      <stop offset="1" stop-color="#161f3c" />
+    </linearGradient>
+    <linearGradient id="chip" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f5d06a" />
+      <stop offset="1" stop-color="#dba12a" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#bg)" />
+  <circle cx="60" cy="60" r="42" fill="#0f172f" stroke="url(#chip)" stroke-width="6" />
+  <circle cx="60" cy="60" r="30" fill="#1f2b53" />
+  <g fill="url(#chip)">
+    <rect x="56" y="18" width="8" height="14" rx="2" />
+    <rect x="56" y="88" width="8" height="14" rx="2" />
+    <rect x="18" y="56" width="14" height="8" rx="2" />
+    <rect x="88" y="56" width="14" height="8" rx="2" />
+  </g>
+  <path d="M43 72l17-36 17 36h-8l-9-18-9 18z" fill="#f5f7ff" />
+  <text x="60" y="84" fill="#f5f7ff" font-family="Segoe UI, sans-serif" font-size="13" text-anchor="middle" font-weight="700">BOT</text>
+</svg>
