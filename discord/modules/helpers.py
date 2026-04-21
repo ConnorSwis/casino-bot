@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-import yaml
 from discord import Color, Embed
 
 
@@ -18,16 +17,25 @@ os.chdir(Path(__file__).parent.parent)
 ABS_PATH = Path(os.getcwd())
 COG_FOLDER = os.path.join(ABS_PATH, 'cogs/')
 
-with open(os.path.join(ABS_PATH.parent, 'config.yml'),  # type:ignore
-            'r', encoding='utf-8') as f:
-    config = yaml.safe_load(f.read()).get('bot', {})
+def _env_int(name: str, default: int) -> int:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except ValueError:
+        return default
 
-TOKEN = config.get('token')
-PREFIX = config.get('prefix', '$')
-OWNER_IDS = config.get('owner_ids')
-DEFAULT_BET = config.get('default_bet', 100)
-B_MULT = config.get('bonus_multiplier', 5)
-B_COOLDOWN = config.get('bonus_cooldown', 12)
+TOKEN = os.getenv('DISCORD_TOKEN')
+PREFIX = os.getenv('DISCORD_PREFIX', '$')
+
+owner_ids = os.getenv('DISCORD_OWNER_IDS', '')
+OWNER_IDS = {int(owner_id.strip()) for owner_id in owner_ids.split(',')
+             if owner_id.strip().isdigit()} or None
+
+DEFAULT_BET = _env_int('DISCORD_DEFAULT_BET', 100)
+B_MULT = _env_int('DISCORD_BONUS_MULTIPLIER', 5)
+B_COOLDOWN = _env_int('DISCORD_BONUS_COOLDOWN', 12)
 
 
 def make_embed(title=None, description=None, color=None, author=None,

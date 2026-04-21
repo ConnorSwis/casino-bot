@@ -14,14 +14,20 @@ class GamblingHelpers(commands.Cog, name='General'):
     async def set(
         self,
         ctx: commands.Context,
-        user_id: int=None,
-        money: int=0,
-        credits: int=0
+        field: str,
+        user_id: int,
+        amount: int
     ):
-        if money:
-            self.economy.set_money(user_id, money)
-        if credits:
-            self.economy.set_credits(user_id, credits)
+        field = field.lower()
+        if field in ('balance', 'money'):
+            self.economy.set_money(user_id, amount)
+            return
+        if field == 'credits':
+            self.economy.set_credits(user_id, amount)
+            return
+        raise commands.errors.BadArgument(
+            "Invalid field. Use `balance` or `credits`."
+        )
 
     @commands.command(
         brief=f"Gives you ${DEFAULT_BET*B_MULT} once every {B_COOLDOWN}hrs",
