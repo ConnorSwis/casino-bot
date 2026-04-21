@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Casino Bot Demo</title>
+    <link rel="stylesheet" href="/static/demo/styles.css?v=20260421b" />
+  </head>
+  <body>
+    <div class="demo-layout">
+      <aside class="status-panel">
+        <h1>Casino Bot Demo</h1>
+        <p class="subhead">Simulated Discord responses.</p>
+        <div class="wallet-card">
+          <p class="wallet-line">
+            <span>Money</span><strong id="wallet-money">$0</strong>
+          </p>
+          <p class="wallet-line">
+            <span>Credits</span><strong id="wallet-credits">0</strong>
+          </p>
+          <p class="wallet-line" style="display: none">
+            <span>Add Cooldown</span><strong id="add-cooldown">Ready</strong>
+          </p>
+        </div>
+        <button id="reset-session" class="ghost-btn" type="button">
+          Reset Session
+        </button>
+      </aside>
+
+      <main class="chat-panel" aria-label="Demo chat interface">
+        <header class="chat-header">
+          <h2># casino-demo</h2>
+          <p>Casino APP bot simulator</p>
+        </header>
+
+        <section id="chat-log" class="chat-log" aria-live="polite"></section>
+
+        <section class="quick-actions" aria-label="Quick command buttons">
+          <button class="quick-btn" data-template="help"></button>
+          <button class="quick-btn" data-template="money"></button>
+          <button class="quick-btn" data-template="blackjack"></button>
+          <button class="quick-btn" data-template="war"></button>
+          <button class="quick-btn" data-template="slots"></button>
+        </section>
+
+        <form id="composer-form" class="composer" autocomplete="off">
+          <input
+            id="composer-input"
+            name="command"
+            type="text"
+            placeholder="Type a command"
+            aria-label="Command input"
+          />
+          <button id="send-btn" type="submit">Send</button>
+        </form>
+      </main>
+    </div>
+
+    <script src="/static/demo/app.js?v=20260421b" defer></script>
+  </body>
+</html>
